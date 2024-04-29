@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+lxml = "~=5.2.1"
+requests = "~=2.31.0"
+pytest = "~=8.1.2"
+pytest-mock = "~=3.14.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

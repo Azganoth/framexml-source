@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Check",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"run_check.sh"
+			]
+		},
+		{
+			"label": "Update",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"run_update.sh"
+			],
+		},
+		{
+			"label": "Tests",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"run_tests.sh"
+			],
+			"group": "test"
+		}
+	]
+}
