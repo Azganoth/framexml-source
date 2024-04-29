@@ -1,0 +1,17 @@
+## Title: Blizzard Objective Tracker UI
+## LoadOnDemand: 0
+## RequiredDep: Blizzard_MawBuffs
+## OptionalDeps: Blizzard_UIWidgets, Blizzard_UIWidgets_WoWLabs
+Blizzard_ObjectiveTrackerShared.xml
+Blizzard_ObjectiveTracker.xml
+Blizzard_QuestSuperTracking.lua
+Blizzard_QuestObjectiveTracker.xml
+Blizzard_CampaignQuestObjectiveTracker.xml
+Blizzard_AchievementObjectiveTracker.lua
+Blizzard_AutoQuestPopUpTracker.xml
+Blizzard_BonusObjectiveTracker.xml
+Blizzard_ScenarioObjectiveTracker.xml
+Blizzard_ProfessionsRecipeTracker.lua
+Blizzard_MonthlyActivitiesObjectiveTracker.lua
+Blizzard_AdventureObjectiveTracker.lua
+Blizzard_ObjectiveTrackerUIWidgetContainer.xml
