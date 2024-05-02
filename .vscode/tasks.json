@@ -2,6 +2,14 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Sync",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"run_sync.sh"
+			],
+		},
+		{
 			"label": "Check",
 			"type": "shell",
 			"command": "bash",
