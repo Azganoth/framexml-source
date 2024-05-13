@@ -5,7 +5,7 @@ import requests
 
 from Scripts.helpers import cache_if_missing
 
-# Example test data
+# Data sample
 SAMPLE_URL = "https://example.com/sample_file"
 SAMPLE_CONTENT = b"Sample content"
 

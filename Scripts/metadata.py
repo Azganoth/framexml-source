@@ -1,11 +1,12 @@
 import re
+from typing import TypeAlias
 
 from lxml import html
 
 
 class HTMLError(Exception):
     """
-    Exception raised for errors related to HTML processing.
+    Raised for errors related to HTML processing.
     """
 
 
@@ -14,7 +15,7 @@ API_VERSION_PATTERN = re.compile(r"\d+\.\d+\.\d+\.\d+")
 
 def _parse_table_row(row: html.HtmlElement) -> tuple[str, str]:
     """
-    Parse a single HTML table row containing file information.
+    Parses a single HTML table row to extract file information.
 
     Args:
         row: The HTML element representing a table row.
@@ -47,9 +48,12 @@ def _parse_table_row(row: html.HtmlElement) -> tuple[str, str]:
     return name, version
 
 
-def parse_file_versions(html_content: str) -> dict[str, str]:
+FrameXMLMetadata: TypeAlias = dict[str, str]
+
+
+def parse_framexml_metadata(html_content: str) -> FrameXMLMetadata:
     """
-    Parse HTML content to extract file names and their corresponding versions.
+    Parses HTML content to extract file names and their corresponding versions.
 
     Args:
         html_content: The HTML content to parse.
@@ -67,7 +71,7 @@ def parse_file_versions(html_content: str) -> dict[str, str]:
     except IndexError:
         raise HTMLError("'#filelist' missing in the provided HTML content.")
 
-    file_versions: dict[str, str] = {}
+    metadata: FrameXMLMetadata = {}
 
     for dir_table in entry_table.xpath('.//tbody[contains(@class, "folder")]'):
         dir_row, *file_rows = dir_table.xpath(".//tr")
@@ -77,10 +81,10 @@ def parse_file_versions(html_content: str) -> dict[str, str]:
         dir_path = dir_name
         for file_row in file_rows:
             filename, version = _parse_table_row(file_row)
-            file_versions[f"{dir_path}/{filename}"] = version
+            metadata[f"{dir_path}/{filename}"] = version
 
     for file_row in entry_table.xpath('.//tbody[contains(@class, "root")]/tr'):
         filename, version = _parse_table_row(file_row)
-        file_versions[filename] = version
+        metadata[filename] = version
 
-    return file_versions
+    return metadata

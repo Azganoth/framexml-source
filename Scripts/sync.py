@@ -7,16 +7,16 @@ import requests
 from Scripts.check import read_local_version
 from Scripts.constants import (
     CACHE_PATH,
-    FILE_VERSIONS_PATH,
+    FRAMEXML_METADATA_PATH,
     FRAMEXML_PATH,
     FRAMEXML_URL,
 )
-from Scripts.file_versions import parse_file_versions
 from Scripts.helpers import cache_if_missing
+from Scripts.metadata import parse_framexml_metadata
 
 
 def sync_framexml_files(
-    version: str, *, session: Optional[requests.Session] = None
+    version: int, *, session: Optional[requests.Session] = None
 ) -> None:
     """
     Syncs the FrameXML files to the specified World of Warcraft version.
@@ -39,11 +39,11 @@ def sync_framexml_files(
         framexml_zip.extractall(FRAMEXML_PATH)
 
 
-def sync_file_versions(
-    version: str, *, session: Optional[requests.Session] = None
+def sync_framexml_metadata(
+    version: int, *, session: Optional[requests.Session] = None
 ) -> None:
     """
-    Syncs the version control file of the specified World of Warcraft version source files.
+    Syncs the version file of the specified World of Warcraft version source files.
 
     Downloads the HTML file containing file versions from the specified World of Warcraft version.
     Parses the HTML content to extract file names and its api versions.
@@ -54,16 +54,14 @@ def sync_file_versions(
         session: An optional requests session to use for the HTTP request.
             If None, a new session will be created. Defaults to None.
     """
-    file_versions_html_path = CACHE_PATH / f"{version}.html"
-    cache_if_missing(
-        file_versions_html_path, f"{FRAMEXML_URL}/{version}", session=session
-    )
+    metadata_html_path = CACHE_PATH / f"{version}.html"
+    cache_if_missing(metadata_html_path, f"{FRAMEXML_URL}/{version}", session=session)
 
-    file_versions = parse_file_versions(file_versions_html_path.read_text())
+    metadata = parse_framexml_metadata(metadata_html_path.read_text())
 
-    FILE_VERSIONS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with FILE_VERSIONS_PATH.open("w") as file_versions_file:
-        json.dump(file_versions, file_versions_file)
+    FRAMEXML_METADATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with FRAMEXML_METADATA_PATH.open("w") as metadata_file:
+        json.dump(metadata, metadata_file, indent=4)
 
 
 if __name__ == "__main__":
@@ -71,5 +69,5 @@ if __name__ == "__main__":
 
     current_version = read_local_version()
 
-    sync_framexml_files(current_version)
-    sync_file_versions(current_version)
+    sync_framexml_files(current_version, session=session)
+    sync_framexml_metadata(current_version, session=session)

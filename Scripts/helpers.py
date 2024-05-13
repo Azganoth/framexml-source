@@ -23,10 +23,8 @@ def cache_if_missing(
     Notes:
         If the parent directory of the cache file does not exist, it will be created.
     """
-    # Ensure the parent directory of the cache file exists.
     cache_file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Download and cache the file if it doesn't exist.
     if not cache_file_path.exists():
         session = session or requests.Session()
 

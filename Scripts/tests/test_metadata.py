@@ -1,5 +1,6 @@
-from Scripts.file_versions import parse_file_versions
+from Scripts.metadata import parse_framexml_metadata
 
+# Data sample
 html_content = """<table id='filelist'>
     <tbody class='folder'>
         <tr>
@@ -105,13 +106,13 @@ html_content = """<table id='filelist'>
 """
 
 
-def test_parse_file_versions():
+def test_parse_framexml_metadata():
     """
-    Test parsing of the file versions from a HTML.
+    Test parsing of the FrameXML metadata from a HTML.
     """
-    file_versions = parse_file_versions(html_content)
+    metadata = parse_framexml_metadata(html_content)
 
-    expected_file_versions = {
+    expected_metadata = {
         "Blizzard_AzeriteEssenceUI/Blizzard_AzeriteEssenceUI.lua": "10.1.0.49426",
         "Blizzard_AzeriteEssenceUI/Blizzard_AzeriteEssenceUI.toc": "8.2.0.30920",
         "Blizzard_AzeriteEssenceUI/Blizzard_AzeriteEssenceUI.xml": "10.1.0.49426",
@@ -123,4 +124,4 @@ def test_parse_file_versions():
         "ProjectConstants.lua": "10.2.6.53840",
     }
 
-    assert file_versions == expected_file_versions
+    assert metadata == expected_metadata

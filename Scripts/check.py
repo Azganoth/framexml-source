@@ -4,21 +4,21 @@ from typing import Optional
 import requests
 from lxml import html
 
-from Scripts.constants import FRAMEXML_URL, VERSION_CONTROL_PATH
+from Scripts.constants import FRAMEXML_URL, VERSION_PATH
 
 
 class InvalidVersionError(Exception):
     """Raised when a version string is invalid."""
 
 
-class VersionControlNotFoundError(FileNotFoundError):
-    """Raised when the version control file is not found."""
+class VersionFileNotFoundError(FileNotFoundError):
+    """Raised when the local version file is not found."""
 
 
 VERSION_PATTERN = re.compile(r"\d+")
 
 
-def fetch_latest_version(*, session: Optional[requests.Session] = None) -> str:
+def fetch_latest_version(*, session: Optional[requests.Session] = None) -> int:
     """
     Fetches the latest World of Warcraft build version.
 
@@ -42,47 +42,48 @@ def fetch_latest_version(*, session: Optional[requests.Session] = None) -> str:
 
     version, _, _ = version_data.partition(";")
     if VERSION_PATTERN.fullmatch(version):
-        return version
+        return int(version)
 
     raise InvalidVersionError()
 
 
-def write_local_version(version: str) -> None:
+def write_local_version(version: int) -> None:
     """
-    Writes the specified World of Warcraft build version to the version control file.
+    Stores the specified World of Warcraft build version in the version file.
 
     Args:
-        build_version: The World of Warcraft build version to write.
+        version: The World of Warcraft build version to store.
 
     Raises:
         InvalidVersionError: If the provided version string is invalid.
     """
-    VERSION_CONTROL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    VERSION_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    if not VERSION_PATTERN.fullmatch(version):
+    version_str = str(version)
+    if not VERSION_PATTERN.fullmatch(version_str):
         raise InvalidVersionError()
 
-    VERSION_CONTROL_PATH.write_text(version)
+    VERSION_PATH.write_text(version_str)
 
 
-def read_local_version() -> str:
+def read_local_version() -> int:
     """
-    Reads the local World of Warcraft build version from the version control file.
+    Retrives the local World of Warcraft build version from the version file.
 
     Returns:
         The local World of Warcraft build version string.
 
     Raises:
-        VersionControlNotFoundError: If the version control file is not found.
+        VersionFileNotFoundError: If the version file is not found.
         InvalidVersionError: If the local version string is invalid.
     """
     try:
-        build_version = VERSION_CONTROL_PATH.read_text()
+        version = VERSION_PATH.read_text()
     except FileNotFoundError:
-        raise VersionControlNotFoundError()
+        raise VersionFileNotFoundError()
 
-    if VERSION_PATTERN.fullmatch(build_version):
-        return build_version
+    if VERSION_PATTERN.fullmatch(version):
+        return int(version)
 
     raise InvalidVersionError()
 
@@ -93,7 +94,8 @@ if __name__ == "__main__":
 
     if latest_version != current_version:
         print(
-            f"Latest: {latest_version}, Current: {current_version}; (Update available)"
+            f"Latest: {latest_version}, "
+            f"Current: {current_version}; (Update available)"
         )
     else:
         print(f"Build: {current_version}; (Up to date)")

@@ -4,20 +4,20 @@ import pytest
 
 from Scripts.check import (
     InvalidVersionError,
-    VersionControlNotFoundError,
+    VersionFileNotFoundError,
     fetch_latest_version,
     read_local_version,
 )
 
-# Example test data
-SAMPLE_VERSION = "54205"
+# Data sample
+SAMPLE_VERSION = 54205
 
 
 @pytest.fixture
-def version_control_path(mocker, tmp_path) -> Path:
-    """Fixture to create a temporary version control file path."""
+def version_path(mocker, tmp_path) -> Path:
+    """Fixture to create a temporary version file path."""
     file_path = tmp_path / "version.txt"
-    mocker.patch("Scripts.check.VERSION_CONTROL_PATH", file_path)
+    mocker.patch("Scripts.check.VERSION_PATH", file_path)
     return file_path
 
 
@@ -42,25 +42,25 @@ def test_fetch_latest_version_with_invalid_response(mocker):
         fetch_latest_version(session=mock_session)
 
 
-def test_read_local_version_with_missing_file(version_control_path):
-    """Test reading the local version when the version control file is missing."""
+def test_read_local_version_with_missing_file(version_path):
+    """Test reading the local version when the version file is missing."""
 
-    with pytest.raises(VersionControlNotFoundError):
+    with pytest.raises(VersionFileNotFoundError):
         read_local_version()
 
 
-def test_read_local_version_with_valid_file(version_control_path):
-    """Test reading the local version from a version control file with a valid version string."""
+def test_read_local_version_with_valid_file(version_path):
+    """Test reading the local version from a version file with a valid version string."""
 
-    version_control_path.write_text(SAMPLE_VERSION)
+    version_path.write_text(str(SAMPLE_VERSION))
 
     assert read_local_version() == SAMPLE_VERSION
 
 
-def test_read_local_version_with_invalid_version(version_control_path):
-    """Test reading the local version from a version control file with an invalid version string."""
+def test_read_local_version_with_invalid_version(version_path):
+    """Test reading the local version from a version file with an invalid version string."""
 
-    version_control_path.write_text("10.2.7")
+    version_path.write_text("10.2.7")
 
     with pytest.raises(InvalidVersionError):
         read_local_version()
