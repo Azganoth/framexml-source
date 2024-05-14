@@ -1,7 +1,11 @@
 import requests
 
 from Scripts.check import fetch_latest_version, write_local_version
-from Scripts.sync import sync_framexml_files, sync_framexml_metadata
+from Scripts.sync import (
+    sync_framexml_documentation,
+    sync_framexml_files,
+    sync_framexml_metadata,
+)
 
 if __name__ == "__main__":
     session = requests.session()
@@ -10,4 +14,5 @@ if __name__ == "__main__":
 
     sync_framexml_files(latest_version, session=session)
     sync_framexml_metadata(latest_version, session=session)
+    sync_framexml_documentation(latest_version, session=session)
     write_local_version(latest_version)
